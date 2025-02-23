@@ -62,7 +62,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center">
+    <div className="container mx-auto px-4 py-8 min-h-screen w-[100vw] flex flex-col items-center bg-gray-500 text-white">
       <h1 className="text-3xl font-bold mb-8 text-center font-medieval">
         Your NFT Collection
       </h1>
@@ -100,7 +100,7 @@ export default function Profile() {
           {nfts.map((nft, index) => (
             <motion.div
               key={index}
-              className="bg-transparent rounded-lg shadow-md overflow-hidden flex flex-col w-72 h-[400px] cursor-pointer"
+              className="bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col w-72 h-[400px] cursor-pointer"
               onClick={() => handleCardClick(nft)}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -111,7 +111,7 @@ export default function Profile() {
                   alt={nft.metadata.name}
                   className="w-full h-full object-cover rounded-lg shadow-lg"
                 />
-                 <h2 className="text-2xl font-bold mb-4">
+                 <h2 className="text-2xl font-bold text-center mb-4">
                     {nft.metadata.name}
                 </h2>
               </div>

@@ -44,7 +44,7 @@ const LotteryGame = () => {
       alert("✅ Tickets Purchased!");
     } catch (error) {
       console.error("Transaction failed", error);
-      alert("❌ Transaction Rejected!");
+      alert($`Ticket id: {ticket.metadata.id} is issued !!` );
     }
   };
 
