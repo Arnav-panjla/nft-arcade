@@ -1,78 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { IoMdSearch } from "react-icons/io";
-import { FaCartShopping } from "react-icons/fa6";
-import { FaCaretDown } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import DarkMode from "./DarkMode";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { ethers } from "ethers";
-import tokenABI from "../../constants/tokenABI"; // Import Token ABI
+import { createThirdwebClient } from "thirdweb";
+import { ConnectButton } from "thirdweb/react";
 
-const TOKEN_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your token's address
+export const client = createThirdwebClient({
+  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID,
+});
 
 const Menu = [
   { id: 1, name: "Home", link: "/" },
-  { id: 2, name: "Games", link: "/" },
-  { id: 3, name: "Media", link: "/" },
+  { id: 2, name: "Dashboard", link: "/Dashboard" },
+  { id: 3, name: "Games", link: "/" },
   { id: 4, name: "FAQ & Support", link: "/" },
 ];
 
-const Navbar = ({ handleOrderPopup }) => {
-  const [account, setAccount] = useState(null);
-  const [balance, setBalance] = useState(null);
-  const [tokenBalance, setTokenBalance] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Connect MetaMask & Fetch Balances
-  const connectMetaMask = async () => {
-    if (!window.ethereum) {
-      alert("MetaMask is not installed");
-      return;
-    }
-
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      setAccount(address);
-
-      // Fetch balances
-      fetchBalances(provider, address);
-    } catch (error) {
-      console.error("Error connecting to MetaMask:", error);
-      alert("MetaMask connection failed");
-    }
-  };
-
-  // Fetch ETH & Token Balances
-  const fetchBalances = async (provider, address) => {
-    try {
-      // Fetch ETH Balance
-      const balance = await provider.getBalance(address);
-      setBalance(ethers.formatEther(balance));
-
-      // Fetch LocalToken (LTK) Balance
-      const tokenContract = new ethers.Contract(TOKEN_ADDRESS, tokenABI, provider);
-      const rawBalance = await tokenContract.balanceOf(address);
-      const decimals = await tokenContract.decimals();
-      setTokenBalance(ethers.formatUnits(rawBalance, decimals));
-    } catch (error) {
-      console.error("Error fetching balances:", error);
-      setError(error.message);
-    }
-  };
-
-  // Auto-fetch balances if already connected
-  useEffect(() => {
-    if (window.ethereum) {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      provider.send("eth_accounts", []).then((accounts) => {
-        if (accounts.length) {
-          setAccount(accounts[0]);
-          fetchBalances(provider, accounts[0]);
-        }
-      });
-    }
-  }, []);
+const Navbar = () => {
 
   return (
     <div className="shadow-md bg-white dark:bg-slate-800 dark:text-white duration-200 relative z-40">
@@ -98,19 +44,7 @@ const Navbar = ({ handleOrderPopup }) => {
               <IoMdSearch className="text-slate-800 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
             </div>
 
-            {/* MetaMask Connect Button & Balance Display */}
-            <button
-              onClick={connectMetaMask}
-              className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition transform hover:scale-110 duration-300"
-            >
-              {account ? (
-                <span>
-                  {account.slice(0, 6)}...{account.slice(-4)} | {balance && `${parseFloat(balance).toFixed(2)} ETH`} | {tokenBalance && `${parseFloat(tokenBalance).toFixed(2)} LTK`}
-                </span>
-              ) : (
-                <span>Connect MetaMask</span>
-              )}
-            </button>
+            <ConnectButton client={client} />
 
             {/* Darkmode Switch */}
             <div>

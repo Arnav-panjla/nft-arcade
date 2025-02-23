@@ -9,6 +9,7 @@ import React from "react";
 import Navbar from "../components/Navbar/Navbar.jsx";
 import GameNGuess from "../pages/GameNGuess.jsx";
 import GameRPS from "../pages/GameRPS.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
 
 const AppRouter = () => {
 
@@ -29,6 +30,7 @@ const AppRouter = () => {
         <Route path="/gamechess" element={<GameChess />} />
         <Route path="/gameNGuess" element={<GameNGuess />} />
         <Route path="/gameRPS" element={<GameRPS />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
