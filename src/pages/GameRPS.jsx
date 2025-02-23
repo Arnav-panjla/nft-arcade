@@ -1,8 +1,25 @@
 import React, { useState } from "react";
 import { FaHandRock, FaHandPaper, FaHandScissors } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSendTransaction } from "thirdweb/react";
+import { prepareContractCall } from "thirdweb";
+import {
+  createThirdwebClient,
+  getContract,
+} from "thirdweb";
+import { defineChain } from "thirdweb/chains";
 
 const choices = ["ROCK", "PAPER", "SCISSORS"];
+
+const client = createThirdwebClient({
+  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID,
+});
+
+const contract = getContract({
+  client,
+  chain: defineChain(11155111),
+  address: "0x2a5735c8235E203ab7302291E46734538D497663",
+});
 
 const GameRPS = () => {
   const [playerVal, setPlayerVal] = useState(null);
@@ -11,13 +28,31 @@ const GameRPS = () => {
   const [compScore, setCompScore] = useState(0);
   const [message, setMessage] = useState("Make your move!");
   const [gameOver, setGameOver] = useState(false);
+  const { mutate: sendTransaction } = useSendTransaction();
 
-  // Custom function to trigger when player wins
-  const handlePlayerVictory = () => {
-    console.log("Player has won! transfering the NFT...");
-    
+  const handlePlayerVictory = async () => {
+    // Here you define the parameters for the transaction
+    const from = import.meta.env.VITE_CREATOR_ADDRESS;  // Replace with the sender's address
+    const to = "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199";  // Replace with the recipient's address
+    const id = 2;                    // Replace with the NFT token ID you want to transfer
+    const amount = 1;                // The amount of NFTs to transfer
+    const data = "0x";              // Additional data (can be empty)
 
+    try {
+      const transaction = prepareContractCall({
+        contract,
+        method: "function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)",
+        params: [from, to, id, amount, data],
+      });
+
+      await sendTransaction(transaction);
+      console.log("Transaction initiated successfully");
+    } catch (error) {
+      console.error("Transaction failed:", error);
+    }
   };
+  
+  
 
   // Determine winner
   const logic = (player, computer) => {
@@ -70,7 +105,8 @@ const GameRPS = () => {
       {/* Choices Buttons */}
       <div className="flex gap-6 mb-6">
         <button
-          onClick={() => decision("ROCK")}
+          // onClick={() => decision("ROCK")}
+          onClick={() => handlePlayerVictory()}
           className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-lg transition shadow-md"
           disabled={gameOver}
         >

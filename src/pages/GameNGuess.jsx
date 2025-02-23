@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { ethers } from "ethers"; 
 import { AnimatePresence, motion } from "framer-motion"; // Import framer-motion
 import WelcomeImg from "../assets/games/guessing-game.svg";
-import contractABI from "../constants/nguessABI";
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 const GameNGuess = () => {
   const [gameConfig, setGameConfig] = useState({ range: 10, attempts: 3 });
@@ -22,21 +20,6 @@ const GameNGuess = () => {
   const [revealedTimestamp, setRevealedTimestamp] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const getContract = async () => {
-    if (!window.ethereum) {
-      throw new Error("Please install MetaMask!");
-    }
-
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []); // Request user accounts
-      const signer = await provider.getSigner();
-      return new ethers.Contract(contractAddress, contractABI, signer);
-    } catch (error) {
-      console.error("Error getting contract:", error);
-      throw new Error("Failed to connect to MetaMask. Please try again.");
-    }
-  };
 
   const simpleHash = (input) => {
     let hash = 0;

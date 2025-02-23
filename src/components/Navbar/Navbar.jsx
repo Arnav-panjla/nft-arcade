@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import DarkMode from "./DarkMode";
@@ -14,11 +14,20 @@ export const client = createThirdwebClient({
 const Menu = [
   { id: 1, name: "Home", link: "/" },
   { id: 2, name: "Dashboard", link: "/Dashboard" },
-  { id: 3, name: "Games", link: "/" },
+  { id: 3, name: "Games", link: "#" },
   { id: 4, name: "FAQ & Support", link: "/" },
 ];
 
 const Navbar = () => {
+  const gamesSectionRef = useRef(null);
+
+  const handleScrollToGames = (e) => {
+    e.preventDefault(); // Prevent default link behavior (no page reload)
+    window.scrollBy({
+      top: window.innerHeight,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="shadow-md bg-white dark:bg-slate-800 dark:text-white duration-200 relative z-40">
@@ -26,7 +35,7 @@ const Navbar = () => {
       <div className="bg-primary/40 py-2">
         <div className="container flex justify-between items-center">
           <div>
-            <a href="#" className="font-bold text-xl flex gap-1 items-center">
+            <a href="/" className="font-bold text-xl flex gap-1 items-center">
               <IoGameControllerOutline size="40" />
               nft-arcade
             </a>
@@ -62,7 +71,8 @@ const Navbar = () => {
               <a
                 href={data.link}
                 className="inline-block px-4 hover:text-primary duration-200"
-              >
+                onClick={data.name === "Games" ? handleScrollToGames : null} // Scroll to Games on click
+                >
                 {data.name}
               </a>
             </li>

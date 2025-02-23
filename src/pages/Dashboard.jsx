@@ -111,6 +111,9 @@ export default function Profile() {
                   alt={nft.metadata.name}
                   className="w-full h-full object-cover rounded-lg shadow-lg"
                 />
+                 <h2 className="text-2xl font-bold mb-4">
+                    {nft.metadata.name}
+                </h2>
               </div>
             </motion.div>
           ))}
